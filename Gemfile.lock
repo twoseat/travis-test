@@ -3,12 +3,15 @@ GEM
   specs:
     ast (1.1.0)
     diff-lcs (1.2.5)
+    mime-types (2.0)
     parser (2.1.4)
       ast (~> 1.1)
       slop (~> 3.4, >= 3.4.5)
     powerpack (0.0.9)
     rainbow (1.99.1)
     rake (10.1.1)
+    rest-client (1.6.7)
+      mime-types (>= 1.16)
     rspec (3.0.0.beta1)
       rspec-core (= 3.0.0.beta1)
       rspec-expectations (= 3.0.0.beta1)
@@ -30,5 +33,6 @@ PLATFORMS
 
 DEPENDENCIES
   rake
+  rest-client
   rspec (>= 3.0.0beta1)
   rubocop
