@@ -1,7 +1,13 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    ast (1.1.0)
     diff-lcs (1.2.5)
+    parser (2.1.4)
+      ast (~> 1.1)
+      slop (~> 3.4, >= 3.4.5)
+    powerpack (0.0.9)
+    rainbow (1.99.1)
     rake (10.1.1)
     rspec (3.0.0.beta1)
       rspec-core (= 3.0.0.beta1)
@@ -13,6 +19,11 @@ GEM
       rspec-support (= 3.0.0.beta1)
     rspec-mocks (3.0.0.beta1)
     rspec-support (3.0.0.beta1)
+    rubocop (0.16.0)
+      parser (~> 2.1)
+      powerpack (~> 0.0.6)
+      rainbow (>= 1.1.4)
+    slop (3.4.7)
 
 PLATFORMS
   ruby
@@ -20,3 +31,4 @@ PLATFORMS
 DEPENDENCIES
   rake
   rspec (>= 3.0.0beta1)
+  rubocop

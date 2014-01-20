@@ -1,0 +1,11 @@
+---
+#ClassVars:
+#  Enabled: false
+#CyclomaticComplexity:
+#  Max: 10
+Documentation:
+  Enabled: false
+EmptyLinesAroundBody:
+  Enabled: false
+LineLength:
+  Enabled: false
