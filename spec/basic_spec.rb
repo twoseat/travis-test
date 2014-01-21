@@ -1,27 +1,31 @@
+require 'pathname'
 require 'rest_client'
 require 'tmpdir'
 
 describe 'Deploy' do
 
+  let(:tmp_dir) { Pathname.new(Dir.mktmpdir) }
   let(:tomcat_version) { '7.0.50' }
-  let(:tmp_dir_name) { Dir.mktmpdir }
+  let(:cache_file) { Pathname.new("vendor/apache-tomcat-#{tomcat_version}.tar.gz") }
+  let(:tomcat_url) { "http://mirror.gopotato.co.uk/apache/tomcat/tomcat-7/v#{tomcat_version}/bin/apache-tomcat-#{tomcat_version}.tar.gz" }
+
 
   before do
-    unless File.exist?("vendor/apache-tomcat-#{tomcat_version}.tar.gz")
-      response = RestClient.get "http://mirror.gopotato.co.uk/apache/tomcat/tomcat-7/v#{tomcat_version}/bin/apache-tomcat-#{tomcat_version}.tar.gz"
-      File.open("vendor/apache-tomcat-#{tomcat_version}.tar.gz", 'w').write response
+    unless cache_file.exist?
+      response = RestClient.get tomcat_url
+      cache_file.write response
     end
   end
 
   before do
-    system "tar zxf vendor/apache-tomcat-#{tomcat_version}.tar.gz -C #{tmp_dir_name}"
+    system "tar zxf #{cache_file} --strip 1 -C #{tmp_dir}"
   end
 
-  it ' expects a /bin/catalina.sh file ' do
-    expect(File).to exist("#{tmp_dir_name}/apache-tomcat-#{tomcat_version}/bin/catalina.sh")
+  it ' expects a bin/catalina.sh file ' do
+    expect(tmp_dir + 'bin/catalina.sh').to exist
   end
 
   after do
-    FileUtils.rm_r "#{tmp_dir_name}"
+    tmp_dir.rmtree
   end
 end
