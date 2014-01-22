@@ -1,10 +1,14 @@
+require 'format_duration'
 require 'pathname'
 require 'rest_client'
 require 'tmpdir'
 
 shared_context 'tomcat_helper' do
 
-  let(:tmp_dir) { Pathname.new(Dir.mktmpdir) }
+  let(:tomcat_metadatas) { [tomcat1_metadata, tomcat2_metadata] }
+  let(:tomcat1_metadata) { { name: 'Tomcat A', location: Pathname.new(Dir.mktmpdir), http_port: 8081, shutdown_port: 8001 } }
+  let(:tomcat2_metadata) { { name: 'Tomcat B', location: Pathname.new(Dir.mktmpdir), http_port: 8082, shutdown_port: 8002 } }
+
   let(:tomcat_version) { '7.0.50' }
   let(:cache_file) { Pathname.new("vendor/apache-tomcat-#{tomcat_version}.tar.gz") }
   let(:tomcat_url) { "http://mirror.gopotato.co.uk/apache/tomcat/tomcat-7/v#{tomcat_version}/bin/apache-tomcat-#{tomcat_version}.tar.gz" }
@@ -16,11 +20,55 @@ shared_context 'tomcat_helper' do
     end
   end
 
-  before do
-    system "tar zxf #{cache_file} --strip 1 -C #{tmp_dir}"
+  before do |example|
+    tomcat_metadatas.each do |tomcat_metadata|
+      with_timing("Starting #{tomcat_metadata[:name]}...") do
+        untar_tomcat tomcat_metadata[:location]
+        replace_server_xml example.metadata[:fixture], tomcat_metadata[:location]
+        start_tomcat tomcat_metadata[:location], tomcat_metadata[:shutdown_port], tomcat_metadata[:http_port]
+      end
+    end
   end
 
   after do
-    tmp_dir.rmtree
+    tomcat_metadatas.each do |tomcat_metadata|
+      with_timing("Stopping #{tomcat_metadata[:name]}...") do
+        stop_tomcat tomcat_metadata[:location], tomcat_metadata[:shutdown_port]
+        tomcat_metadata[:location].rmtree
+      end
+    end
   end
+
+  def replace_server_xml(server_xml, dir)
+    FileUtils.copy "spec/fixtures/#{server_xml}.xml", "#{dir}/conf/server.xml"
+  end
+
+  def start_tomcat(dir, shutdown_port, http_port)
+    `JAVA_OPTS=\"-Dshutdown.port=#{shutdown_port} -Dhttp.port=#{http_port}\" #{dir}/bin/catalina.sh start`
+    wait_for_start(http_port)
+  end
+
+  def stop_tomcat(dir, shutdown_port)
+    `JAVA_OPTS=\"-Dshutdown.port=#{shutdown_port}\" #{dir}/bin/catalina.sh stop`
+  end
+
+  def untar_tomcat(dir)
+    `tar zxf #{cache_file} --strip 1 -C #{dir}`
+  end
+
+  def wait_for_start(http_port)
+    RestClient.get "http://localhost:#{http_port}"
+  rescue Errno::ECONNREFUSED
+    retry
+  end
+
+  def with_timing(caption)
+    start_time = Time.now
+    print "#{caption} "
+
+    yield 'foo', 'bar', 'baz'
+
+    puts "(#{(Time.now - start_time).duration})"
+  end
+
 end

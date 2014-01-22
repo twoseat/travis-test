@@ -4,7 +4,14 @@ require 'tomcat_helper'
 describe 'Deploy' do
   include_context 'tomcat_helper'
 
-  it 'expects a bin/catalina.sh file' do
-    expect(tmp_dir + 'bin/catalina.sh').to exist
+  it 'expects a bin/catalina.sh file for Tomcat 1',
+     fixture: 'server' do
+    tomcat_metadatas.each { |tomcat_metadata| expect(tomcat_metadata[:location] + 'bin/catalina.sh').to exist }
   end
+
+  it 'expects a bin/catalina.sh file for Tomcat',
+     fixture: 'server-without-foo' do
+    tomcat_metadatas.each { |tomcat_metadata| expect(tomcat_metadata[:location] + 'bin/catalina.sh').to exist }
+  end
+
 end

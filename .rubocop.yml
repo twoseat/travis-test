@@ -12,3 +12,5 @@ EmptyLinesAroundBody:
   Enabled: false
 LineLength:
   Enabled: false
+MethodLength:
+  Max: 25
