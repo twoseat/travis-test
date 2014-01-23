@@ -9,17 +9,7 @@ shared_context 'tomcat_helper' do
   let(:tomcat1_metadata) { { name: 'Tomcat A', location: Pathname.new(Dir.mktmpdir), http_port: 8081, shutdown_port: 8001 } }
   let(:tomcat2_metadata) { { name: 'Tomcat B', location: Pathname.new(Dir.mktmpdir), http_port: 8082, shutdown_port: 8002 } }
 
-  let(:tomcat_version) { '7.0.50' }
-  let(:cache_file) { Pathname.new("vendor/apache-tomcat-#{tomcat_version}.tar.gz") }
-  let(:tomcat_url) { "http://mirror.gopotato.co.uk/apache/tomcat/tomcat-7/v#{tomcat_version}/bin/apache-tomcat-#{tomcat_version}.tar.gz" }
-
-  before do
-    FileUtils.makedirs cache_file.parent unless cache_file.parent.exist?
-    unless cache_file.exist?
-      response = RestClient.get tomcat_url
-      cache_file.write response
-    end
-  end
+  let(:cache_file) { Pathname.new('vendor/tomcat.tar.gz') }
 
   before do |example|
     tomcat_metadatas.each do |tomcat_metadata|

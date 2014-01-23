@@ -9,11 +9,4 @@ describe 'Deploy' do
     tomcat_metadatas.each { |tomcat_metadata| expect(tomcat_metadata[:location] + 'bin/catalina.sh').to exist }
   end
 
-=begin
-  it 'expects a bin/catalina.sh file for Tomcat',
-     fixture: 'server-without-foo' do
-    tomcat_metadatas.each { |tomcat_metadata| expect(tomcat_metadata[:location] + 'bin/catalina.sh').to exist }
-  end
-=end
-
 end
