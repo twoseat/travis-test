@@ -1,4 +1,6 @@
 .bundle
 .idea/tasks.xml
 .idea/workspace.xml
+.idea/libraries
+target
 vendor
