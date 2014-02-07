@@ -5,9 +5,9 @@ require 'tmpdir'
 
 shared_context 'tomcat_helper' do
 
-  let(:tomcat_metadatas) { [tomcat1_metadata, tomcat2_metadata] }
-  let(:tomcat1_metadata) { { name: 'Tomcat A', location: Pathname.new(Dir.mktmpdir), http_port: 8081, shutdown_port: 8001 } }
-  let(:tomcat2_metadata) { { name: 'Tomcat B', location: Pathname.new(Dir.mktmpdir), http_port: 8082, shutdown_port: 8002 } }
+  let(:tomcat_metadatas) { [tomcatA_metadata, tomcatB_metadata] }
+  let(:tomcatA_metadata) { { name: 'Tomcat_A', location: Pathname.new(Dir.mktmpdir), http_port: 8081, shutdown_port: 8001 } }
+  let(:tomcatB_metadata) { { name: 'Tomcat_B', location: Pathname.new(Dir.mktmpdir), http_port: 8082, shutdown_port: 8002 } }
 
   let(:cache_file) { Pathname.new('vendor/tomcat.tar.gz') }
 
