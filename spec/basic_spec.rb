@@ -6,10 +6,10 @@ describe 'Deploy' do
 
   it 'expects session data to be stored and retrieved from a single instance',
      fixture: 'server' do
-    session_data = 'Session_data_stored_in_' + tomcat_metadata[:name]
+    session_data = 'Session data stored in Tomcat'
     location     = "http://localhost:#{tomcat_metadata[:http_port]}/session"
-    response     = RestClient.post location, session_data
+    response     = RestClient.post location, session_data, content_type: 'text/plain'
     cookies      = response.cookies
-    expect(RestClient.get location, cookies: cookies).to eq(session_data + '=')
+    expect(RestClient.get location, cookies: cookies).to eq(session_data)
   end
 end

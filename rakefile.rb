@@ -24,4 +24,5 @@ file 'vendor/tomcat.tar.gz' do |f|
 end
 
 task spec: %w(test-application/target/application.war vendor/tomcat.tar.gz)
+task warfile: 'test-application/target/application.war'
 task default: [:rubocop, :spec]
