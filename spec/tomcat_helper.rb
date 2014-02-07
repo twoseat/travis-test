@@ -5,29 +5,23 @@ require 'tmpdir'
 
 shared_context 'tomcat_helper' do
 
-  let(:tomcat_metadatas) { [tomcatA_metadata, tomcatB_metadata] }
-  let(:tomcatA_metadata) { { name: 'Tomcat_A', location: Pathname.new(Dir.mktmpdir), http_port: 8081, shutdown_port: 8001 } }
-  let(:tomcatB_metadata) { { name: 'Tomcat_B', location: Pathname.new(Dir.mktmpdir), http_port: 8082, shutdown_port: 8002 } }
+  let(:tomcat_metadata) { { name: 'Tomcat', location: Pathname.new(Dir.mktmpdir), http_port: 8081, shutdown_port: 8001 } }
 
   let(:cache_file) { Pathname.new('vendor/tomcat.tar.gz') }
 
   before do |example|
-    tomcat_metadatas.each do |tomcat_metadata|
-      with_timing("Starting #{tomcat_metadata[:name]}...") do
-        untar_tomcat tomcat_metadata[:location]
-        replace_server_xml example.metadata[:fixture], tomcat_metadata[:location]
-        deploy_war tomcat_metadata[:location]
-        start_tomcat tomcat_metadata[:location], tomcat_metadata[:shutdown_port], tomcat_metadata[:http_port]
-      end
+    with_timing("Starting #{tomcat_metadata[:name]}...") do
+      untar_tomcat tomcat_metadata[:location]
+      replace_server_xml example.metadata[:fixture], tomcat_metadata[:location]
+      deploy_war tomcat_metadata[:location]
+      start_tomcat tomcat_metadata[:location], tomcat_metadata[:shutdown_port], tomcat_metadata[:http_port]
     end
   end
 
   after do
-    tomcat_metadatas.each do |tomcat_metadata|
-      with_timing("Stopping #{tomcat_metadata[:name]}...") do
-        stop_tomcat tomcat_metadata[:location], tomcat_metadata[:shutdown_port]
-        tomcat_metadata[:location].rmtree
-      end
+    with_timing("Stopping #{tomcat_metadata[:name]}...") do
+      stop_tomcat tomcat_metadata[:location], tomcat_metadata[:shutdown_port]
+      tomcat_metadata[:location].rmtree
     end
   end
 
